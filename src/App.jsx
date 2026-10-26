@@ -46,7 +46,7 @@ const theme = createTheme({
 
 // Placeholder content: kainchifoodproducts.in is a parked page, so replace with real details.
 // Placeholder number: country code + number, no + or spaces.
-const WHATSAPP = '910000000000'
+const WHATSAPP = '917773841695'
 const waLink = (msg) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`
 const WA_LINK = waLink('Hello Kainchi Food Products, I would like to enquire about your spice powders.')
 const NAV = ['Home', 'About', 'Products', 'Gallery', 'Contact']
@@ -67,12 +67,13 @@ const QUALITY = [
   ['Packing', 'Food-grade, sealed packs with batch codes for full traceability.'],
 ]
 const CONTACT = [
-  [<PlaceIcon />, 'Plot 12, Industrial Area, Indore, Madhya Pradesh 452001, India'],
-  [<PhoneIcon />, '+91 00000 00000'],
+  [<PlaceIcon />, '144/A, Silver Oaks Colony, Annapurna Road, Sudama Nagar, Indore, Madhya Pradesh 452009, India'],
+  [<PhoneIcon />, '+91 77738 41695'],
   [<EmailIcon />, 'info@kainchifoodproducts.in'],
 ]
 // Mock data. Every certificate renders a SAMPLE watermark; replace with scans of the real ones.
 const CERTIFICATES = [
+  ['TAN Allotment', 'Income Tax Department, Government of India', 'TAN BPLK09282A', 'from 9 Oct 2026', '/certificates/tan.jpg'],
   ['FSSAI Licence', 'Food Safety and Standards Authority of India', 'Lic. No. 10000000000000', '2025 – 2030'],
   ['ISO 22000:2018', 'Food Safety Management System', 'Cert. No. FS-000000', '2025 – 2028'],
   ['HACCP', 'Hazard Analysis and Critical Control Points', 'Cert. No. HC-000000', '2025 – 2028'],
@@ -113,6 +114,13 @@ const FACILITIES = [
   ['Cold & Dry Storage', 'Clean, pest-controlled warehousing for raw and finished goods.'],
 ]
 // Placeholder profile URLs; replace with the real accounts.
+const FOUNDERS = [
+  ['Kunal', 'Founder',
+    'Kunal started Kainchi Food Products with a simple belief: good food starts with honest ingredients. He leads the company with a focus on quality, fair sourcing and long-term relationships with customers.',
+    'https://www.linkedin.com/in/kunal-vipat-039a041a2/', '/photos/kunal.png'],
+  ['Sarvesh Kanugo', 'Co-founder',
+    'Sarvesh co-founded Kainchi Food Products to build a spice business that is pure, precise and global. Sarvesh helps steer the company\'s growth, from sourcing and operations to reaching customers at home and abroad.', 'https://www.linkedin.com/in/casarveshkanugo25', '/photos/sarvesh.png'],
+]
 const SOCIALS = [
   ['Facebook', <FacebookIcon />, 'https://facebook.com/kainchifoodproducts'],
   ['Instagram', <InstagramIcon />, 'https://instagram.com/kainchifoodproducts'],
@@ -183,18 +191,30 @@ const HeroSlider = ({ go }) => {
   )
 }
 
-const Certificate = ({ title, issuer, no, valid }) => (
-  <Box sx={{ position: 'relative', p: 3, textAlign: 'center', bgcolor: '#FFFDF4', border: '6px double', borderColor: 'secondary.main', borderRadius: 1, height: '100%', overflow: 'hidden' }}>
-    <Box component="img" src="/logo.svg" alt="" sx={{ height: 36 }} />
-    <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>Certificate of</Typography>
-    <Typography variant="h6" color="primary">{title}</Typography>
-    <Typography variant="body2" sx={{ my: 1 }}>Issued to Kainchi Food Products by {issuer}</Typography>
-    <Typography variant="body2" color="text.secondary">{no}</Typography>
-    <Typography variant="body2" color="text.secondary">Valid {valid}</Typography>
-    <Typography aria-hidden sx={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', transform: 'rotate(-20deg)',
-      fontSize: '3rem', fontWeight: 800, color: 'rgba(196,40,28,.18)', pointerEvents: 'none' }}>SAMPLE</Typography>
-  </Box>
-)
+const Certificate = ({ title, issuer, no, valid, scan }) => {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <Box onClick={scan ? () => setOpen(true) : undefined} onKeyDown={scan ? (e) => e.key === 'Enter' && setOpen(true) : undefined}
+        role={scan ? 'button' : undefined} tabIndex={scan ? 0 : undefined} aria-label={scan ? `View ${title} certificate` : undefined}
+        sx={{ position: 'relative', p: 3, textAlign: 'center', bgcolor: '#FFFDF4', border: '6px double', borderColor: 'secondary.main', borderRadius: 1, height: '100%', overflow: 'hidden', cursor: scan ? 'pointer' : 'default' }}>
+        <Box component="img" src="/logo.jpg" alt="" sx={{ height: 36 }} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 1 }}>Certificate of</Typography>
+        <Typography variant="h6" color="primary">{title}</Typography>
+        <Typography variant="body2" sx={{ my: 1 }}>Issued to Kainchi Food Products by {issuer}</Typography>
+        <Typography variant="body2" color="text.secondary">{no}</Typography>
+        <Typography variant="body2" color="text.secondary">Valid {valid}</Typography>
+        {scan ? <Typography variant="caption" color="primary" sx={{ display: 'block', mt: 1 }}>Click to view full certificate</Typography>
+          : <Typography aria-hidden sx={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', transform: 'rotate(-20deg)',
+            fontSize: '3rem', fontWeight: 800, color: 'rgba(196,40,28,.18)', pointerEvents: 'none' }}>SAMPLE</Typography>}
+      </Box>
+      {scan && <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth aria-label={title}>
+        <IconButton aria-label="Close" onClick={() => setOpen(false)} sx={{ position: 'absolute', right: 8, top: 8, bgcolor: 'rgba(255,255,255,.8)' }}><CloseIcon /></IconButton>
+        <Box component="img" src={scan} alt={`${title} certificate`} sx={{ width: '100%', display: 'block' }} />
+      </Dialog>}
+    </>
+  )
+}
 
 const Section = ({ id, title, children, alt }) => (
   <Box id={id} sx={{ py: 8, bgcolor: alt ? '#FFF4D6' : 'transparent' }}>
@@ -220,7 +240,7 @@ export default function App() {
       <CssBaseline />
       <AppBar position="sticky" color="inherit" elevation={0} sx={{ bgcolor: 'rgba(255,255,255,.9)', backdropFilter: 'blur(8px)', borderBottom: 1, borderColor: 'divider' }}>
         <Toolbar sx={{ gap: 2 }}>
-          <Box component="img" src="/logo.svg" alt="" sx={{ height: 40 }} />
+          <Box component="img" src="/logo.jpg" alt="" sx={{ height: 48, borderRadius: 1 }} />
           <Typography variant="h6" color="primary" sx={{ flexGrow: 1, fontWeight: 700, display: { xs: 'none', sm: 'block' } }}>
             Kainchi Food Products
           </Typography>
@@ -235,8 +255,8 @@ export default function App() {
 
       {page === 'Home' && <Section id="certifications" title="Certified for food safety and export" alt>
         <Grid container spacing={3}>
-          {CERTIFICATES.slice(0, 3).map(([t, i, n, v]) => (
-            <Grid key={t} size={{ xs: 12, md: 4 }}><Certificate title={t} issuer={i} no={n} valid={v} /></Grid>
+          {CERTIFICATES.slice(0, 3).map(([t, i, n, v, r]) => (
+            <Grid key={t} size={{ xs: 12, md: 4 }}><Certificate title={t} issuer={i} no={n} valid={v} scan={r} /></Grid>
           ))}
         </Grid>
         <Button sx={{ mt: 3 }} onClick={() => go('Gallery')}>View all certificates</Button>
@@ -262,15 +282,17 @@ export default function App() {
       </Section>}
 
       {page === 'About' && <Section id="founder" title="Meet the Founder" alt>
-        <Stack spacing={2} sx={{ alignItems: 'center', maxWidth: 640, mx: 'auto', textAlign: 'center' }}>
-          <Avatar sx={{ width: 96, height: 96, bgcolor: 'primary.main', fontSize: 40 }}>K</Avatar>
-          <Typography variant="h6">Kunal</Typography>
-          <Typography color="text.secondary">Founder, Kainchi Food Products</Typography>
-          <Typography>
-            Kunal started Kainchi Food Products with a simple belief: good food starts with honest
-            ingredients. He leads the company with a focus on quality, fair sourcing and long-term
-            relationships with customers.
-          </Typography>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={6} sx={{ justifyContent: 'center' }}>
+          {FOUNDERS.map(([name, role, bio, link, photo]) => (
+            <Stack key={name} spacing={2} sx={{ alignItems: 'center', maxWidth: 400, textAlign: 'center' }}>
+              <Avatar sx={{ width: 96, height: 96, bgcolor: 'primary.main', fontSize: 40 }} src={photo}>{name[0]}</Avatar>
+              <Typography variant="h6">{name}</Typography>
+              <Typography color="text.secondary">{role}, Kainchi Food Products</Typography>
+              {bio && <Typography>{bio}</Typography>}
+              {link && <Button size="small" variant="outlined" startIcon={<LinkedInIcon />} href={link}
+                target="_blank" rel="noopener noreferrer">LinkedIn</Button>}
+            </Stack>
+          ))}
         </Stack>
       </Section>}
 
@@ -374,8 +396,8 @@ export default function App() {
 
       {page === 'Gallery' && <Section id="certificates" title="Certificates" alt>
         <Grid container spacing={3}>
-          {CERTIFICATES.map(([t, i, n, v]) => (
-            <Grid key={t} size={{ xs: 12, sm: 6, md: 4 }}><Certificate title={t} issuer={i} no={n} valid={v} /></Grid>
+          {CERTIFICATES.map(([t, i, n, v, r]) => (
+            <Grid key={t} size={{ xs: 12, sm: 6, md: 4 }}><Certificate title={t} issuer={i} no={n} valid={v} scan={r} /></Grid>
           ))}
         </Grid>
       </Section>}
@@ -388,7 +410,7 @@ export default function App() {
                 <Stack key={text} direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>{icon}<Typography>{text}</Typography></Stack>
               ))}
               <Box component="iframe" title="Map" loading="lazy"
-                src="https://www.google.com/maps?q=Indore,Madhya+Pradesh&output=embed"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(CONTACT[0][1])}&z=13&output=embed`}
                 sx={{ border: 0, width: '100%', height: 260, borderRadius: 1 }} />
             </Stack>
           </Grid>
@@ -429,7 +451,7 @@ export default function App() {
           <Grid container spacing={4}>
             <Grid size={{ xs: 12, md: 5 }}>
               <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1 }}>
-                <Box component="img" src="/logo.svg" alt="" sx={{ height: 40 }} />
+                <Box component="img" src="/logo.jpg" alt="" sx={{ height: 40 }} />
                 <Typography variant="h6">Kainchi Food Products</Typography>
               </Stack>
               <Typography sx={{ maxWidth: '40ch', opacity: 0.85 }}>Dehydrated spice powders from Indore, packed fresh for kitchens and exporters.</Typography>
